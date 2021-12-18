@@ -4,9 +4,10 @@ const User = require('../models/User')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const secret = "AviNvoo";
-
+const fecthUser=  require('../middleware/fetchuser')
 
 const { body, validationResult } = require('express-validator');
+const fetchUser = require('../middleware/fetchuser');
 
 
 // create user route
@@ -40,7 +41,7 @@ try{
         id:user.id   
       }
     }
-      var authenticateToken = jwt.sign(data, 'shhhhh');
+      const authenticateToken = jwt.sign(data, secret);
 
       res.json(authenticateToken)
     }
@@ -60,6 +61,60 @@ try{
     // res.send(req.body)
     // console.log("kdjfk")
     // res.send("kdjf");
+})
+
+
+
+// login user route 
+router.post('/login',body('email','please enter email not anythng else').isEmail(),body('password','password could not be empty').exists(),async(req,res)=>{
+
+  const {email,password}= req.body;
+  try{
+    let user = await User.findOne({email:req.body.email});
+    if(!user){
+      return res.status(400).json("please check your credentials again");
+    }
+   const passwordCompare =await bcrypt.compare(password,user.password)
+   if(!passwordCompare){
+    return res.status(400).json("please check your credentials again");
+     
+   }
+
+  const data =  {
+    user:{
+      id:user.id
+    }
+  }
+
+  const authenticateToken = jwt.sign(data,secret);
+
+  res.json(authenticateToken)
+
+  }catch{
+    res.status(500).json({"err":"Error occured"})
+    
+  }
+
+})
+
+
+
+// get users deatails route 
+
+router.post('/getuser',fetchUser,async(req,res)=>{
+  try {
+
+    const userid = await req.user.id;
+    const user = await User.findById(userid).select("-password");
+
+    res.send(user)
+
+  } catch (error) {
+    res.status(500).json({"err":"Error occured"})
+    
+  }
+ 
+  
 })
 
 module.exports = router;
