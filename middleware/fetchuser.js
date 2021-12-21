@@ -10,13 +10,12 @@ const fetchUser = (req,res,next)=>{
     const token = req.header('auth-token');
 try{
 
-
     if(!token){
         res.status(401).json("please access with valid token")
     }
 
     const userIdData = jwt.verify(token,secret);
-console.log(userIdData)
+    console.log(userIdData)
     req.user = userIdData.user;
     next();
     

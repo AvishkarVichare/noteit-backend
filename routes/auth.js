@@ -4,7 +4,6 @@ const User = require('../models/User')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const secret = "AviNvoo";
-const fecthUser=  require('../middleware/fetchuser')
 
 const { body, validationResult } = require('express-validator');
 const fetchUser = require('../middleware/fetchuser');
@@ -99,7 +98,7 @@ router.post('/login',body('email','please enter email not anythng else').isEmail
 
 
 
-// get users deatails route 
+// get users deatails route by using token(they have id inside them )
 
 router.post('/getuser',fetchUser,async(req,res)=>{
   try {
