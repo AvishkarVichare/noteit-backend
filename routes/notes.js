@@ -43,7 +43,7 @@ res.json(savedNotes)
 }
 })
 
-// Route 2 to post all notes of user login required
+// Route 3 to post all notes of user login required
 router.put('/updatenotes/:id',fetchUser,async(req,res)=>{
 
     try{
@@ -77,7 +77,7 @@ res.send(note)
 
 
 
-// Route 3 for deleting existing note using Delete 
+// Route 4 for deleting existing note using Delete 
 router.delete('/delete/:id',fetchUser,async(req,res)=>{
     try{
     let note = await Notes.findById(req.params.id);
